@@ -10,4 +10,5 @@
     <string name="yandex_details">Translation Powered by Yandex.Translate</string>
     <string name="error_ro">Oops! Introdu ceva de tradus</string>
     <string name="error_en">Oops! Enter something to translate</string>
+    <string name="error_no_net">No network access. Check connectivity</string>
 </resources>

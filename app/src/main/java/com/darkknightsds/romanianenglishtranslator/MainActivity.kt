@@ -7,8 +7,12 @@ import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 
@@ -74,35 +78,43 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun englishToRomanian() {
-        textToTranslate = editText_en.text.trim().toString()
-        if (textToTranslate.isEmpty()) {
-            editText_en.error = resources.getString(R.string.error_en)
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
-            val inputMethodManager = getSystemService(
-                Activity.INPUT_METHOD_SERVICE
-            ) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(
-                currentFocus.windowToken, 0
-            )
-            val languageConfig = resources.getString(R.string.eng_ro)
-            translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
+            textToTranslate = editText_en.text.trim().toString()
+            if (textToTranslate.isEmpty()) {
+                editText_en.error = resources.getString(R.string.error_en)
+            } else {
+                val inputMethodManager = getSystemService(
+                    Activity.INPUT_METHOD_SERVICE
+                ) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(
+                    currentFocus.windowToken, 0
+                )
+                val languageConfig = resources.getString(R.string.eng_ro)
+                translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
+            }
         }
     }
 
     private fun romanianToEnglish() {
-        textToTranslate = editText_ro.text.trim().toString()
-        if (textToTranslate.isEmpty()) {
-            editText_ro.error = resources.getString(R.string.error_ro)
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
-            val inputMethodManager = getSystemService(
-                Activity.INPUT_METHOD_SERVICE
-            ) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(
-                currentFocus.windowToken, 0
-            )
-            val languageConfig = resources.getString(R.string.ro_eng)
-            translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted
-            )
+            textToTranslate = editText_ro.text.trim().toString()
+            if (textToTranslate.isEmpty()) {
+                editText_ro.error = resources.getString(R.string.error_ro)
+            } else {
+                val inputMethodManager = getSystemService(
+                    Activity.INPUT_METHOD_SERVICE
+                ) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(
+                    currentFocus.windowToken, 0
+                )
+                val languageConfig = resources.getString(R.string.ro_eng)
+                translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted
+                )
+            }
         }
     }
 
@@ -126,5 +138,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 break
             }
         }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
+        return if (connectivityManager is ConnectivityManager) {
+            val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+            networkInfo?.isConnected ?: false
+        } else false
     }
 }
