@@ -6,6 +6,7 @@ import org.koin.dsl.module.module
 
 class TranslationApplication : Application() {
     private val appModule = module {
+        single { TranslationPresenter(applicationContext) }
         single { TranslationService() }
     }
 

@@ -19,7 +19,7 @@ import androidx.core.content.res.ResourcesCompat
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var textToTranslate: String
     private lateinit var options: String
-    private val translationService: TranslationService by inject()
+    private val translationPresenter: TranslationPresenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun englishToRomanian() {
-        if (!isNetworkAvailable()) {
+        if (!translationPresenter.isNetworkAvailable()) {
             Toast.makeText(this, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
             textToTranslate = editText_en.text.trim().toString()
@@ -92,13 +92,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     currentFocus.windowToken, 0
                 )
                 val languageConfig = resources.getString(R.string.eng_ro)
-                translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
+                translationPresenter.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
             }
         }
     }
 
     private fun romanianToEnglish() {
-        if (!isNetworkAvailable()) {
+        if (!translationPresenter.isNetworkAvailable()) {
             Toast.makeText(this, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
             textToTranslate = editText_ro.text.trim().toString()
@@ -112,8 +112,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     currentFocus.windowToken, 0
                 )
                 val languageConfig = resources.getString(R.string.ro_eng)
-                translationService.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted
-                )
+                translationPresenter.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
             }
         }
     }
@@ -138,13 +137,5 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 break
             }
         }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
-        return if (connectivityManager is ConnectivityManager) {
-            val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-            networkInfo?.isConnected ?: false
-        } else false
     }
 }
