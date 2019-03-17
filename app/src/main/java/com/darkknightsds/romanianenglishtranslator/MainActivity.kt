@@ -7,9 +7,6 @@ import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import android.app.Activity
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
@@ -34,32 +31,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         textView_roLabel.typeface = boldFont
         textView_yandex.text = resources.getString(R.string.yandex_details)
         textView_yandex.typeface = regFont
+        button_engToRo.text = resources.getString(R.string.english_translate)
+        button_engToRo.typeface = boldFont
+        button_roToEng.text = resources.getString(R.string.romanian_translate)
+        button_roToEng.typeface = boldFont
 
-        imageView_ro.setOnClickListener(this)
-        imageView_en.setOnClickListener(this)
+        button_engToRo.setOnClickListener(this)
+        button_roToEng.setOnClickListener(this)
 
         options = resources.getString(R.string.search_options) + resources.getString(R.string.more_details) + resources.getString(R.string.search_details)
 
-        editText_en.setOnEditorActionListener { v, actionId, event ->
-            return@setOnEditorActionListener when (actionId) {
-                EditorInfo.IME_ACTION_DONE -> {
-                    englishToRomanian()
-                    true
-                }
-                else -> false
-            }
-        }
         editText_en.typeface = regFont
-
-        editText_ro.setOnEditorActionListener { v, actionId, event ->
-            return@setOnEditorActionListener when (actionId) {
-                EditorInfo.IME_ACTION_DONE -> {
-                    romanianToEnglish()
-                    true
-                }
-                else -> false
-            }
-        }
         editText_ro.typeface = regFont
 
         val toolbar = findViewById<Toolbar>(R.id.app_toolbar)
@@ -69,10 +51,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        if (v == imageView_ro) {
+        if (v == button_engToRo) {
             englishToRomanian()
         }
-        if (v == imageView_en) {
+        if (v == button_roToEng) {
             romanianToEnglish()
         }
     }
