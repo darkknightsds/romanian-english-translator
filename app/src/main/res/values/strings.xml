@@ -2,8 +2,10 @@
     <string name="app_name">Romanian English Translator</string>
     <string name="eng_ro">en-ro</string>
     <string name="ro_eng">ro-en</string>
-    <string name="english_label">English to Romanian</string>
-    <string name="romanian_label">Română la Engleză</string>
+    <string name="english_label_en">English</string>
+    <string name="romanian_label_en">Romanian</string>
+    <string name="english_label_ro">Engleză</string>
+    <string name="romanian_label_ro">Română</string>
     <string name="english_translate">Translate</string>
     <string name="romanian_translate">Traduce</string>
     <string name="search_options">trnsl</string>

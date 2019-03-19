@@ -23,7 +23,7 @@
             android:inputType="textMultiLine"
             android:textSize="18sp"
             android:ems="10"
-            android:id="@+id/editText_en"
+            android:id="@+id/editText_translate"
             android:imeOptions="actionDone"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -36,26 +36,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/textView_enLabel"/>
-
-    <EditText
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:ems="10"
-            android:id="@+id/editText_ro"
-            android:imeOptions="actionDone"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginStart="16dp"
-            android:gravity="top"
-            android:background="@drawable/edittext_bg"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:inputType="textMultiLine"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/textView_roLabel"
-    />
 
     <TextView
             android:layout_width="wrap_content"
@@ -70,8 +50,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView_roLabel"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/button_engToRo" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" android:layout_marginTop="24dp"/>
+            app:layout_constraintStart_toEndOf="@+id/imageView_arrow"
+            android:layout_marginStart="8dp" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/app_toolbar"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -84,22 +65,30 @@
 
     <Button
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_engToRo" app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="50dp"
+            android:id="@+id/button_translate" app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/button_bg"
             android:textSize="18sp"
             android:layout_marginStart="16dp"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/editText_en" app:layout_constraintHorizontal_bias="0.0"/>
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/editText_translate"
+            android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/imageButton_swap"/>
 
-    <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_roToEng" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/editText_ro" app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/button_bg"
-            android:textSize="18sp"
-            android:layout_marginStart="16dp" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="16dp"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_forward_gray_24dp"
+            android:id="@+id/imageView_arrow"
+            app:layout_constraintStart_toEndOf="@+id/textView_enLabel" android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/textView_enLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_enLabel"/>
+
+    <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp" app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
+            android:id="@+id/imageButton_swap"
+            android:background="@drawable/button_bg_light"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="@+id/button_translate"
+            app:layout_constraintBottom_toBottomOf="@+id/button_translate"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
