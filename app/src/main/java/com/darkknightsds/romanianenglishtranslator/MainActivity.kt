@@ -14,14 +14,21 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import android.view.inputmethod.EditorInfo
 import android.text.InputType
+import android.speech.SpeechRecognizer
+import android.speech.RecognizerIntent
+import android.content.Intent
+
+
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val translationPresenter: TranslationPresenter by inject()
+
     private lateinit var textToTranslate: String
     private lateinit var options: String
     private lateinit var languageConfig: String
     private lateinit var translateEditText: EditText
     private lateinit var resultsEditText: EditText
-    private val translationPresenter: TranslationPresenter by inject()
+    private lateinit var speechRecognizer: SpeechRecognizer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +52,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         button_enToRo.setOnClickListener(this)
         button_roToEn.setOnClickListener(this)
+        button_speechEn.setOnClickListener(this)
+        button_speechRo.setOnClickListener(this)
 
         options = resources.getString(R.string.search_options) + resources.getString(R.string.more_details) + resources.getString(R.string.search_details)
 
@@ -92,6 +101,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
         toolbar.changeToolbarFont()
         toolbar.setTitleTextColor(resources.getColor(R.color.white))
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizer.setRecognitionListener(SpeechListener(callback = this::displaySpeechText))
     }
 
     override fun onClick(v: View) {
@@ -107,6 +119,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 translateEditText = editText_translateRo
                 resultsEditText = editText_translateEn
                 translate()
+            }
+            button_speechEn -> {
+                languageConfig = resources.getString(R.string.eng_ro)
+                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+                speechRecognizer.startListening(intent)
+            }
+            button_speechRo -> {
+                languageConfig = resources.getString(R.string.ro_eng)
+                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro")
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+                speechRecognizer.startListening(intent)
             }
         }
     }
@@ -154,5 +182,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 break
             }
         }
+    }
+
+    private fun displaySpeechText(results: String) {
+        runOnUiThread {
+            if (languageConfig == resources.getString(R.string.eng_ro)) {
+                editText_translateEn.append(" $results")
+            } else {
+                editText_translateRo.append(" $results")
+            }
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        speechRecognizer.destroy()
     }
 }
