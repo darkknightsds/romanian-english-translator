@@ -10,7 +10,7 @@ class TranslationService {
     private lateinit var resp: String
     private lateinit var respArr: String
 
-    fun getResults(textToTranslate: String, languageConfig: String, options: String, callback: (translatedText: String, languageConfig: String) -> Unit) {
+    fun getResults(textToTranslate: String, languageConfig: String, options: String, callback: (translatedText: String) -> Unit) {
         val url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=URLINFO&text=TEXTTOTRANSLATE&lang=LANGUAGECONFIG".replace("URLINFO", options) .replace("TEXTTOTRANSLATE", textToTranslate).replace("LANGUAGECONFIG", languageConfig)
 
         val request = Request.Builder()
@@ -45,7 +45,7 @@ class TranslationService {
                         e.printStackTrace()
                     }
 
-                    callback(respArr, languageConfig)
+                    callback(respArr)
                 }
             }
         })

@@ -20,11 +20,9 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="150dp"
-            android:inputType="textMultiLine"
             android:textSize="18sp"
             android:ems="10"
-            android:id="@+id/editText_translate"
-            android:imeOptions="actionDone"
+            android:id="@+id/editText_translateEn"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:paddingTop="8dp"
@@ -32,11 +30,28 @@
             android:layout_marginStart="16dp"
             android:gravity="top"
             android:background="@drawable/edittext_bg"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView_enLabel"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView_enLabel" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/editText_translateRo" app:layout_constraintHorizontal_bias="0.5"
+            android:singleLine="false"/>
 
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:textSize="18sp"
+            android:ems="10"
+            android:id="@+id/editText_translateRo"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="top"
+            android:background="@drawable/edittext_bg"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView_enLabel" android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/editText_translateEn"
+            app:layout_constraintHorizontal_bias="0.5" android:singleLine="false"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,9 +65,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView_roLabel"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_arrow"
-            android:layout_marginStart="8dp" android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/app_toolbar"/>
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/app_toolbar"
+            app:layout_constraintStart_toStartOf="@+id/editText_translateRo"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -66,29 +81,33 @@
     <Button
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:id="@+id/button_translate" app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/button_enToRo" app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/button_bg"
             android:textSize="18sp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/editText_translate"
-            android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/imageButton_swap"/>
+            app:layout_constraintTop_toBottomOf="@+id/editText_translateEn"
+            android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/button_roToEn"
+            app:layout_constraintHorizontal_bias="0.5"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:id="@+id/button_roToEn"
+            android:background="@drawable/button_bg"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/editText_translateEn"
+            android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_enToRo" app:layout_constraintHorizontal_bias="0.5"/>
 
-    <ImageView
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_forward_gray_24dp"
-            android:id="@+id/imageView_arrow"
-            app:layout_constraintStart_toEndOf="@+id/textView_enLabel" android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@+id/textView_enLabel"
-            app:layout_constraintBottom_toBottomOf="@+id/textView_enLabel"/>
-
-    <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp" app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
-            android:id="@+id/imageButton_swap"
-            android:background="@drawable/button_bg_light"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="@+id/button_translate"
-            app:layout_constraintBottom_toBottomOf="@+id/button_translate"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_translate"
+            app:layout_constraintTop_toTopOf="@+id/editText_translateEn" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp" android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/editText_translateEn"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,17 +6,21 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import android.app.Activity
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
+import android.view.inputmethod.EditorInfo
+import android.text.InputType
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var textToTranslate: String
     private lateinit var options: String
     private lateinit var languageConfig: String
+    private lateinit var translateEditText: EditText
+    private lateinit var resultsEditText: EditText
     private val translationPresenter: TranslationPresenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,15 +38,55 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         textView_roLabel.typeface = boldFont
         textView_yandex.text = resources.getString(R.string.yandex_details)
         textView_yandex.typeface = regFont
-        button_translate.text = resources.getString(R.string.english_translate)
-        button_translate.typeface = boldFont
+        button_enToRo.text = resources.getString(R.string.english_translate)
+        button_enToRo.typeface = boldFont
+        button_roToEn.text = resources.getString(R.string.romanian_translate)
+        button_roToEn.typeface = boldFont
 
-        button_translate.setOnClickListener(this)
-        imageButton_swap.setOnClickListener(this)
+        button_enToRo.setOnClickListener(this)
+        button_roToEn.setOnClickListener(this)
 
         options = resources.getString(R.string.search_options) + resources.getString(R.string.more_details) + resources.getString(R.string.search_details)
 
-        editText_translate.typeface = regFont
+        editText_translateEn.typeface = regFont
+        editText_translateEn.inputType = InputType.TYPE_CLASS_TEXT
+        editText_translateEn.setSingleLine(true)
+        editText_translateEn.setLines(6)
+        editText_translateEn.setHorizontallyScrolling(false)
+        editText_translateEn.imeOptions = EditorInfo.IME_ACTION_DONE
+
+        editText_translateRo.typeface = regFont
+        editText_translateRo.inputType = InputType.TYPE_CLASS_TEXT
+        editText_translateRo.setSingleLine(true)
+        editText_translateRo.setLines(6)
+        editText_translateRo.setHorizontallyScrolling(false)
+        editText_translateRo.imeOptions = EditorInfo.IME_ACTION_DONE
+
+        findViewById<EditText>(R.id.editText_translateEn).setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    languageConfig = resources.getString(R.string.eng_ro)
+                    translateEditText = editText_translateEn
+                    resultsEditText = editText_translateRo
+                    translate()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        findViewById<EditText>(R.id.editText_translateRo).setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    languageConfig = resources.getString(R.string.ro_eng)
+                    translateEditText = editText_translateRo
+                    resultsEditText = editText_translateEn
+                    translate()
+                    true
+                }
+                else -> false
+            }
+        }
 
         val toolbar = findViewById<Toolbar>(R.id.app_toolbar)
         setSupportActionBar(toolbar)
@@ -52,23 +96,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v) {
-            button_translate -> {
+            button_enToRo -> {
+                languageConfig = resources.getString(R.string.eng_ro)
+                translateEditText = editText_translateEn
+                resultsEditText = editText_translateRo
                 translate()
             }
-            imageButton_swap -> {
-                if (languageConfig == resources.getString(R.string.eng_ro)) {
-                    Log.d("clicked", "eng-ro")
-                    languageConfig = resources.getString(R.string.ro_eng)
-                    button_translate.text = resources.getString(R.string.romanian_translate)
-                    textView_enLabel.text = resources.getString(R.string.english_label_ro)
-                    textView_roLabel.text = resources.getString(R.string.romanian_label_ro)
-                } else {
-                    Log.d("clicked", "ro-eng")
-                    languageConfig = resources.getString(R.string.eng_ro)
-                    button_translate.text = resources.getString(R.string.english_translate)
-                    textView_enLabel.text = resources.getString(R.string.english_label_en)
-                    textView_roLabel.text = resources.getString(R.string.romanian_label_en)
-                }
+            button_roToEn -> {
+                languageConfig = resources.getString(R.string.ro_eng)
+                translateEditText = editText_translateRo
+                resultsEditText = editText_translateEn
+                translate()
             }
         }
     }
@@ -77,9 +115,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (!translationPresenter.isNetworkAvailable()) {
             Toast.makeText(this, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
-            textToTranslate = editText_translate.text.trim().toString()
+            textToTranslate = translateEditText.text.trim().toString()
             if (textToTranslate.isEmpty()) {
-                editText_translate.error = resources.getString(R.string.error_en)
+                if (languageConfig == resources.getString(R.string.eng_ro)) {
+                    translateEditText.error = resources.getString(R.string.error_en)
+                } else {
+                    translateEditText.error = resources.getString(R.string.error_ro)
+                }
             } else {
                 val inputMethodManager = getSystemService(
                     Activity.INPUT_METHOD_SERVICE
@@ -88,13 +130,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     currentFocus?.windowToken, 0
                 )
                 translationPresenter.getResults(textToTranslate, languageConfig, options, callback = this::translationCompleted)
+                progressBar_translate.visibility = View.VISIBLE
+                button_enToRo.isEnabled = false
+                button_roToEn.isEnabled = false
             }
         }
     }
 
-    private fun translationCompleted(translatedText: String, languageConfig: String) {
+    private fun translationCompleted(translatedText: String) {
         runOnUiThread {
-            editText_translate.setText(translatedText)
+            progressBar_translate.visibility = View.GONE
+            resultsEditText.setText(translatedText)
+            button_enToRo.isEnabled = true
+            button_roToEn.isEnabled = true
         }
     }
 

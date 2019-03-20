@@ -6,10 +6,10 @@ import android.net.NetworkInfo
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
-class TranslationPresenter(val context: Context): KoinComponent {
+class TranslationPresenter(private val context: Context): KoinComponent {
     private val translationService: TranslationService by inject()
 
-    fun getResults(textToTranslate: String, languageConfig: String, options: String, callback: (translatedText: String, languageConfig: String) -> Unit) {
+    fun getResults(textToTranslate: String, languageConfig: String, options: String, callback: (translatedText: String) -> Unit) {
         translationService.getResults(textToTranslate, languageConfig, options, callback)
     }
 
