@@ -1,5 +1,6 @@
 package com.darkknightsds.romanianenglishtranslator
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -17,11 +18,13 @@ import android.text.InputType
 import android.speech.SpeechRecognizer
 import android.speech.RecognizerIntent
 import android.content.Intent
-
-
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val translationPresenter: TranslationPresenter by inject()
+    private val REQUEST_RECORD_PERMISSION = 1007
 
     private lateinit var textToTranslate: String
     private lateinit var options: String
@@ -121,6 +124,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 translate()
             }
             button_speechEn -> {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(
+                            Manifest.permission.RECORD_AUDIO
+                        ), REQUEST_RECORD_PERMISSION
+                    )
+                }
                 languageConfig = resources.getString(R.string.eng_ro)
                 val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
@@ -129,6 +140,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 speechRecognizer.startListening(intent)
             }
             button_speechRo -> {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(
+                            Manifest.permission.RECORD_AUDIO
+                        ), REQUEST_RECORD_PERMISSION
+                    )
+                }
                 languageConfig = resources.getString(R.string.ro_eng)
                 val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
@@ -161,6 +180,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 progressBar_translate.visibility = View.VISIBLE
                 button_enToRo.isEnabled = false
                 button_roToEn.isEnabled = false
+                button_speechEn.isEnabled = false
+                button_speechRo.isEnabled = false
             }
         }
     }
@@ -171,6 +192,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             resultsEditText.setText(translatedText)
             button_enToRo.isEnabled = true
             button_roToEn.isEnabled = true
+            button_speechEn.isEnabled = true
+            button_speechRo.isEnabled = true
         }
     }
 
