@@ -4,7 +4,7 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".TranslationFragment">
+             tools:context=".ui.TranslationFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         <EditText
                 android:layout_width="0dp"
                 android:layout_height="150dp"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:ems="10"
                 android:id="@+id/editText_translateEn"
                 android:paddingStart="8dp"
@@ -49,7 +49,7 @@
         <EditText
                 android:layout_width="0dp"
                 android:layout_height="150dp"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:ems="10"
                 android:id="@+id/editText_translateRo"
                 android:paddingStart="8dp"

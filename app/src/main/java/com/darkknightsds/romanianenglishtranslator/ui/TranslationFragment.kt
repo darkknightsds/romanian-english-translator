@@ -1,14 +1,14 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.ui
 
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.InputType
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,24 +18,26 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.ViewModelProviders
+import com.darkknightsds.romanianenglishtranslator.*
 import kotlinx.android.synthetic.main.fragment_translation.*
 import org.koin.android.ext.android.inject
 
 class TranslationFragment : Fragment(), View.OnClickListener {
+    //Values
     private val translationPresenter: TranslationPresenter by inject()
-    private val encryptedSharedPreferences: EncryptedSharedPreferences by inject()
     private val REQUEST_RECORD_PERMISSION = 1007
-    private val TAG = javaClass.simpleName
-
+    //Variables
     private lateinit var textToTranslate: String
     private lateinit var options: String
     private lateinit var languageConfig: String
     private lateinit var translateEditText: EditText
     private lateinit var resultsEditText: EditText
     private lateinit var speechRecognizer: SpeechRecognizer
-    private var translationsArrayList = ArrayList<Translation>()
+    private lateinit var viewModel: TranslationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +49,12 @@ class TranslationFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         languageConfig = resources.getString(R.string.eng_ro)
 
-        val boldFont = ResourcesCompat.getFont(activity!!.applicationContext, R.font.pt_sans_bold)
-        val regFont = ResourcesCompat.getFont(activity!!.applicationContext, R.font.pt_sans_reg)
+        val boldFont = ResourcesCompat.getFont(activity!!.applicationContext,
+            R.font.pt_sans_bold
+        )
+        val regFont = ResourcesCompat.getFont(activity!!.applicationContext,
+            R.font.pt_sans_reg
+        )
 
         textView_enLabel.text = resources.getString(R.string.english_label_en)
         textView_enLabel.typeface = boldFont
@@ -64,7 +70,9 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         button_speechEn.setOnClickListener(this)
         button_speechRo.setOnClickListener(this)
 
-        options = resources.getString(R.string.search_options) + resources.getString(R.string.more_details) + resources.getString(R.string.search_details)
+        options = resources.getString(R.string.search_options) + resources.getString(
+            R.string.more_details
+        ) + resources.getString(R.string.search_details)
 
         editText_translateEn.typeface = regFont
         editText_translateEn.inputType = InputType.TYPE_CLASS_TEXT
@@ -107,6 +115,10 @@ class TranslationFragment : Fragment(), View.OnClickListener {
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity)
         speechRecognizer.setRecognitionListener(SpeechListener(callback = this::displaySpeechText))
+
+        viewModel = activity?.run {
+            ViewModelProviders.of(this).get(TranslationViewModel::class.java)
+        } ?: throw Exception()
     }
 
     override fun onClick(v: View) {
@@ -195,20 +207,11 @@ class TranslationFragment : Fragment(), View.OnClickListener {
             button_speechEn.isEnabled = true
             button_speechRo.isEnabled = true
 
-            val translation = Translation(editText_translateEn.text.toString(), editText_translateRo.text.toString())
-            if (translationsArrayList.size < 5) {
-                Log.d(TAG, translationsArrayList.size.toString())
-                translationsArrayList.add(translation)
-                Log.d(TAG, translationsArrayList.toString())
-                encryptedSharedPreferences.saveStringToSharedPreferences(resources.getString(R.string.recent_translations), translationsArrayList.toString())
-            } else {
-                val oversizedArray = translationsArrayList.toMutableList().apply {
-                    removeAt(0)
-                }
-                oversizedArray.add(translation)
-                translationsArrayList = ArrayList(oversizedArray)
-                encryptedSharedPreferences.saveStringToSharedPreferences(resources.getString(R.string.recent_translations), translationsArrayList.toString())
-            }
+            val translation = Translation(
+                editText_translateEn.text.toString(),
+                editText_translateRo.text.toString()
+            )
+            translationPresenter.processRecentTranslations(translation, callback = this::recentTranslationSaved)
         }
     }
 
@@ -220,6 +223,10 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                 editText_translateRo.append(" $results")
             }
         }
+    }
+
+    private fun recentTranslationSaved(recentTranslations: String) {
+        viewModel.newTranslationAdded(recentTranslations)
     }
 
     override fun onDestroyView() {

@@ -6,7 +6,8 @@ import android.speech.SpeechRecognizer
 import android.util.Log
 
 class SpeechListener(val callback: (results: String) -> Unit): RecognitionListener {
-    private val TAG = "SpeechListener"
+    //Values
+    private val TAG = javaClass.simpleName
 
     override fun onReadyForSpeech(params: Bundle) {
         Log.d(TAG, "onReadyForSpeech")

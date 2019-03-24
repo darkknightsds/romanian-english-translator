@@ -6,7 +6,9 @@ import org.json.JSONObject
 import java.io.IOException
 
 class TranslationService {
+    //Values
     private val client = OkHttpClient()
+    //Variables
     private lateinit var resp: String
     private lateinit var respArr: String
 
