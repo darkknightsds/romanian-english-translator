@@ -1,5 +1,7 @@
 package com.darkknightsds.romanianenglishtranslator
 
+import com.darkknightsds.romanianenglishtranslator.service.EncryptedSharedPreferences
+import com.darkknightsds.romanianenglishtranslator.service.TranslationService
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 

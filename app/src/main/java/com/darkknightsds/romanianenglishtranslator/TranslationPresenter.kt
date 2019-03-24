@@ -33,8 +33,8 @@ class TranslationPresenter(private val context: Context): KoinComponent {
     fun processRecentTranslations(translation: Translation, callback: (recentTranslations: String) -> Unit) {
         this.callback = callback
 
-        if (!translationRepository.checkForStringInSharedPreferences(context.resources.getString(R.string.recent_translations))) {
-            val retrievedArrayList: ArrayList<Translation> = Gson().fromJson(translationRepository.getStringFromSharedPreferences(context.resources.getString(R.string.recent_translations)), object : TypeToken<ArrayList<Translation>>() {}.type)
+        if (!checkForStringInSharedPreferences(context.resources.getString(R.string.recent_translations))) {
+            val retrievedArrayList = convertJsonStringToArrayList(translationRepository.getStringFromSharedPreferences(context.resources.getString(R.string.recent_translations)))
                 if (retrievedArrayList.size < 5) {
                     retrievedArrayList.add(translation)
                     saveRecentTranslationsArrayListToSharedPreferences(retrievedArrayList)
@@ -50,6 +50,22 @@ class TranslationPresenter(private val context: Context): KoinComponent {
             translationsArrayList.add(translation)
             saveRecentTranslationsArrayListToSharedPreferences(translationsArrayList)
         }
+    }
+
+    fun convertJsonStringToArrayList(json: String): ArrayList<Translation> {
+        return Gson().fromJson(json, object : TypeToken<ArrayList<Translation>>() {}.type)
+    }
+
+    fun checkForStringInSharedPreferences(key: String): Boolean {
+        return translationRepository.checkForStringInSharedPreferences(key)
+    }
+
+    fun getStringFromSharedPreferences(key: String): String {
+        return translationRepository.getStringFromSharedPreferences(key)
+    }
+
+    fun deleteStringFromSharedPreferences(key: String) {
+        translationRepository.deleteStringFromSharedPreferences(key)
     }
 
     private fun saveRecentTranslationsArrayListToSharedPreferences(arrayList: ArrayList<Translation>) {

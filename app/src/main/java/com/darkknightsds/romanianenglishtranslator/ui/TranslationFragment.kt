@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.InputType
@@ -18,7 +17,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
@@ -47,7 +45,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        languageConfig = resources.getString(R.string.eng_ro)
+        languageConfig = resources.getString(R.string.en_ro)
 
         val boldFont = ResourcesCompat.getFont(activity!!.applicationContext,
             R.font.pt_sans_bold
@@ -75,14 +73,14 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         ) + resources.getString(R.string.search_details)
 
         editText_translateEn.typeface = regFont
-        editText_translateEn.inputType = InputType.TYPE_CLASS_TEXT
+        editText_translateEn.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         editText_translateEn.setSingleLine(true)
         editText_translateEn.setLines(6)
         editText_translateEn.setHorizontallyScrolling(false)
         editText_translateEn.imeOptions = EditorInfo.IME_ACTION_DONE
 
         editText_translateRo.typeface = regFont
-        editText_translateRo.inputType = InputType.TYPE_CLASS_TEXT
+        editText_translateRo.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         editText_translateRo.setSingleLine(true)
         editText_translateRo.setLines(6)
         editText_translateRo.setHorizontallyScrolling(false)
@@ -91,7 +89,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         getView()!!.findViewById<EditText>(R.id.editText_translateEn).setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    languageConfig = resources.getString(R.string.eng_ro)
+                    languageConfig = resources.getString(R.string.en_ro)
                     translateEditText = editText_translateEn
                     resultsEditText = editText_translateRo
                     translate()
@@ -103,7 +101,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         getView()!!.findViewById<EditText>(R.id.editText_translateRo).setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    languageConfig = resources.getString(R.string.ro_eng)
+                    languageConfig = resources.getString(R.string.ro_en)
                     translateEditText = editText_translateRo
                     resultsEditText = editText_translateEn
                     translate()
@@ -124,13 +122,13 @@ class TranslationFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v) {
             button_enToRo -> {
-                languageConfig = resources.getString(R.string.eng_ro)
+                languageConfig = resources.getString(R.string.en_ro)
                 translateEditText = editText_translateEn
                 resultsEditText = editText_translateRo
                 translate()
             }
             button_roToEn -> {
-                languageConfig = resources.getString(R.string.ro_eng)
+                languageConfig = resources.getString(R.string.ro_en)
                 translateEditText = editText_translateRo
                 resultsEditText = editText_translateEn
                 translate()
@@ -144,7 +142,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                         ), REQUEST_RECORD_PERMISSION
                     )
                 }
-                languageConfig = resources.getString(R.string.eng_ro)
+                languageConfig = resources.getString(R.string.en_ro)
                 val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
@@ -160,7 +158,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                         ), REQUEST_RECORD_PERMISSION
                     )
                 }
-                languageConfig = resources.getString(R.string.ro_eng)
+                languageConfig = resources.getString(R.string.ro_en)
                 val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro")
@@ -176,7 +174,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         } else {
             textToTranslate = translateEditText.text.trim().toString()
             if (textToTranslate.isEmpty()) {
-                if (languageConfig == resources.getString(R.string.eng_ro)) {
+                if (languageConfig == resources.getString(R.string.en_ro)) {
                     translateEditText.error = resources.getString(R.string.error_en)
                 } else {
                     translateEditText.error = resources.getString(R.string.error_ro)
@@ -217,7 +215,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
 
     private fun displaySpeechText(results: String) {
         activity!!.runOnUiThread {
-            if (languageConfig == resources.getString(R.string.eng_ro)) {
+            if (languageConfig == resources.getString(R.string.en_ro)) {
                 editText_translateEn.append(" $results")
             } else {
                 editText_translateRo.append(" $results")

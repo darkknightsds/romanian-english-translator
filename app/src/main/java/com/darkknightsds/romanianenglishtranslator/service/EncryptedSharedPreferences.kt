@@ -1,8 +1,8 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.service
 
 import android.content.Context
 import android.util.Base64
-import android.R.attr.data
+import com.darkknightsds.romanianenglishtranslator.R
 import java.nio.charset.Charset
 
 

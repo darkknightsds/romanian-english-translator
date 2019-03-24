@@ -1,4 +1,4 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.service
 
 import okhttp3.*
 import org.json.JSONException

@@ -1,6 +1,8 @@
 package com.darkknightsds.romanianenglishtranslator
 
 import android.app.Application
+import com.darkknightsds.romanianenglishtranslator.service.EncryptedSharedPreferences
+import com.darkknightsds.romanianenglishtranslator.service.TranslationService
 import com.darkknightsds.romanianenglishtranslator.ui.RecentTranslationsFragment
 import com.darkknightsds.romanianenglishtranslator.ui.TranslationFragment
 import org.koin.android.ext.android.startKoin

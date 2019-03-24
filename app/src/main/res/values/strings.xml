@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Romanian English Translator</string>
-    <string name="eng_ro">en-ro</string>
-    <string name="ro_eng">ro-en</string>
+    <string name="en_ro">en-ro</string>
+    <string name="ro_en">ro-en</string>
     <string name="english_label_en">English</string>
     <string name="romanian_label_en">Romanian</string>
     <string name="english_label_ro">Engleză</string>
@@ -17,4 +17,6 @@
     <string name="error_no_net">No network access. Check connectivity</string>
     <string name="shared_preferences">sharedPreferences</string>
     <string name="recent_translations">recentTranslations</string>
+    <string name="recent_translations_header">Recent Translations</string>
+    <string name="clear_button">Clear</string>
 </resources>
