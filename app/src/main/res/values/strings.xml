@@ -15,4 +15,6 @@
     <string name="error_ro">Oops! Introdu ceva de tradus</string>
     <string name="error_en">Oops! Enter something to translate</string>
     <string name="error_no_net">No network access. Check connectivity</string>
+    <string name="shared_preferences">sharedPreferences</string>
+    <string name="recent_translations">recentTranslations</string>
 </resources>

@@ -8,6 +8,8 @@ class TranslationApplication : Application() {
     private val appModule = module {
         single { TranslationPresenter(applicationContext) }
         single { TranslationService() }
+        single { TranslationFragment() }
+        single { EncryptedSharedPreferences(applicationContext) }
     }
 
     override fun onCreate() {
