@@ -1,14 +1,17 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.presenter
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.util.Log
+import com.darkknightsds.romanianenglishtranslator.R
+import com.darkknightsds.romanianenglishtranslator.repository.TranslationRepository
+import com.darkknightsds.romanianenglishtranslator.model.Translation
 import com.google.gson.Gson
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import com.google.gson.reflect.TypeToken
 
+//Primary business logic class for views
 class TranslationPresenter(private val context: Context): KoinComponent {
     //Values
     private val translationRepository: TranslationRepository by inject()
@@ -34,7 +37,9 @@ class TranslationPresenter(private val context: Context): KoinComponent {
         this.callback = callback
 
         if (!checkForStringInSharedPreferences(context.resources.getString(R.string.recent_translations))) {
-            val retrievedArrayList = convertJsonStringToArrayList(translationRepository.getStringFromSharedPreferences(context.resources.getString(R.string.recent_translations)))
+            val retrievedArrayList = convertJsonStringToArrayList(translationRepository.getStringFromSharedPreferences(context.resources.getString(
+                R.string.recent_translations
+            )))
                 if (retrievedArrayList.size < 5) {
                     retrievedArrayList.add(translation)
                     saveRecentTranslationsArrayListToSharedPreferences(retrievedArrayList)

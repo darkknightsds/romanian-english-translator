@@ -6,10 +6,10 @@ import org.koin.android.ext.android.inject
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import com.darkknightsds.romanianenglishtranslator.R
 import kotlinx.android.synthetic.main.activity_main.*
 
+//MainActivity which sets toolbar and launches fragments
 class MainActivity : AppCompatActivity() {
     //Values
     private val translationFragment: TranslationFragment by inject()
@@ -19,12 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val regFont = ResourcesCompat.getFont(this, R.font.pt_sans_reg)
-
         val toolbar = findViewById<Toolbar>(R.id.app_toolbar)
         setSupportActionBar(toolbar)
         toolbar.changeToolbarFont()
         toolbar.setTitleTextColor(resources.getColor(R.color.white))
+
+        val regFont = ResourcesCompat.getFont(this, R.font.pt_sans_reg)
 
         textView_yandex.text = resources.getString(R.string.yandex_details)
         textView_yandex.typeface = regFont

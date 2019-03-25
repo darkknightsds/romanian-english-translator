@@ -5,8 +5,8 @@ import android.util.Base64
 import com.darkknightsds.romanianenglishtranslator.R
 import java.nio.charset.Charset
 
-
-class EncryptedSharedPreferences(val context: Context) {
+//Service to save, delete and retrieve data from SharedPreferences
+class EncryptedSharedPreferences(private val context: Context) {
     //Values
     val prefs = context.getSharedPreferences(context.resources.getString(R.string.shared_preferences), Context.MODE_PRIVATE)
     val editor = context.getSharedPreferences(context.resources.getString(R.string.shared_preferences), Context.MODE_PRIVATE).edit()

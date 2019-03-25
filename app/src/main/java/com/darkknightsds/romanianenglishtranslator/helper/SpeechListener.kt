@@ -1,10 +1,11 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.helper
 
 import android.speech.RecognitionListener
 import android.os.Bundle
 import android.speech.SpeechRecognizer
 import android.util.Log
 
+//Android RecognitionListener with callback for returning audio
 class SpeechListener(val callback: (results: String) -> Unit): RecognitionListener {
     //Values
     private val TAG = javaClass.simpleName
@@ -34,7 +35,6 @@ class SpeechListener(val callback: (results: String) -> Unit): RecognitionListen
     }
 
     override fun onResults(results: Bundle) {
-        Log.d(TAG, "onResults $results")
         val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         callback(matches[0])
     }

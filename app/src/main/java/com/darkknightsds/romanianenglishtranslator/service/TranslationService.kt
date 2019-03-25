@@ -5,6 +5,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
+//Networking service to handle translation jobs
 class TranslationService {
     //Values
     private val client = OkHttpClient()

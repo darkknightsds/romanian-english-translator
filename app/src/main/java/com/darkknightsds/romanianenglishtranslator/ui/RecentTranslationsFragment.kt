@@ -1,25 +1,22 @@
 package com.darkknightsds.romanianenglishtranslator.ui
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darkknightsds.romanianenglishtranslator.*
+import com.darkknightsds.romanianenglishtranslator.model.Translation
+import com.darkknightsds.romanianenglishtranslator.presenter.TranslationPresenter
+import com.darkknightsds.romanianenglishtranslator.helper.TranslationViewModel
 import kotlinx.android.synthetic.main.fragment_recent_translations.*
-import kotlinx.android.synthetic.main.fragment_translation.*
 import org.koin.android.ext.android.inject
 
+//View to display recent translations
 class RecentTranslationsFragment : Fragment(), View.OnClickListener {
     //Values
     private val translationPresenter: TranslationPresenter by inject()

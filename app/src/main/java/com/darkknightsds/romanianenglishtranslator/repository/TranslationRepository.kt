@@ -1,10 +1,11 @@
-package com.darkknightsds.romanianenglishtranslator
+package com.darkknightsds.romanianenglishtranslator.repository
 
 import com.darkknightsds.romanianenglishtranslator.service.EncryptedSharedPreferences
 import com.darkknightsds.romanianenglishtranslator.service.TranslationService
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
+//Repository class that interacts with services
 class TranslationRepository: KoinComponent {
     private val translationService: TranslationService by inject()
     private val encryptedSharedPreferences: EncryptedSharedPreferences by inject()

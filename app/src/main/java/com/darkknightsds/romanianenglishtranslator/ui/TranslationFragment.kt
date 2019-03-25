@@ -21,9 +21,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
 import com.darkknightsds.romanianenglishtranslator.*
+import com.darkknightsds.romanianenglishtranslator.helper.SpeechListener
+import com.darkknightsds.romanianenglishtranslator.model.Translation
+import com.darkknightsds.romanianenglishtranslator.presenter.TranslationPresenter
+import com.darkknightsds.romanianenglishtranslator.helper.TranslationViewModel
 import kotlinx.android.synthetic.main.fragment_translation.*
 import org.koin.android.ext.android.inject
 
+//View to process transactions including voice and text input
 class TranslationFragment : Fragment(), View.OnClickListener {
     //Values
     private val translationPresenter: TranslationPresenter by inject()
@@ -67,6 +72,8 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         button_roToEn.setOnClickListener(this)
         button_speechEn.setOnClickListener(this)
         button_speechRo.setOnClickListener(this)
+        imageButton_clearEn.setOnClickListener(this)
+        imageButton_clearRo.setOnClickListener(this)
 
         options = resources.getString(R.string.search_options) + resources.getString(
             R.string.more_details
@@ -86,7 +93,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         editText_translateRo.setHorizontallyScrolling(false)
         editText_translateRo.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        getView()!!.findViewById<EditText>(R.id.editText_translateEn).setOnEditorActionListener { v, actionId, event ->
+        getView()!!.findViewById<EditText>(R.id.editText_translateEn).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     languageConfig = resources.getString(R.string.en_ro)
@@ -98,7 +105,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                 else -> false
             }
         }
-        getView()!!.findViewById<EditText>(R.id.editText_translateRo).setOnEditorActionListener { v, actionId, event ->
+        getView()!!.findViewById<EditText>(R.id.editText_translateRo).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     languageConfig = resources.getString(R.string.ro_en)
@@ -112,7 +119,11 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         }
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity)
-        speechRecognizer.setRecognitionListener(SpeechListener(callback = this::displaySpeechText))
+        speechRecognizer.setRecognitionListener(
+            SpeechListener(
+                callback = this::displaySpeechText
+            )
+        )
 
         viewModel = activity?.run {
             ViewModelProviders.of(this).get(TranslationViewModel::class.java)
@@ -165,6 +176,12 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
                 speechRecognizer.startListening(intent)
             }
+            imageButton_clearEn -> {
+                editText_translateEn.text.clear()
+            }
+            imageButton_clearRo -> {
+                editText_translateRo.text.clear()
+            }
         }
     }
 
@@ -216,9 +233,17 @@ class TranslationFragment : Fragment(), View.OnClickListener {
     private fun displaySpeechText(results: String) {
         activity!!.runOnUiThread {
             if (languageConfig == resources.getString(R.string.en_ro)) {
-                editText_translateEn.append(" $results")
+                if (editText_translateEn.text.isEmpty()) {
+                    editText_translateEn.append(results)
+                } else {
+                    editText_translateEn.append(" $results")
+                }
             } else {
-                editText_translateRo.append(" $results")
+                if (editText_translateRo.text.isEmpty()) {
+                    editText_translateRo.append(results)
+                } else {
+                    editText_translateRo.append(" $results")
+                }
             }
         }
     }

@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.darkknightsds.romanianenglishtranslator.R
-import com.darkknightsds.romanianenglishtranslator.Translation
+import com.darkknightsds.romanianenglishtranslator.model.Translation
+import java.util.*
 
+//Adapter to bind data with recent translations RecyclerView
 class RecentTranslationsListAdapter(private val data: ArrayList<Translation>) :
     androidx.recyclerview.widget.RecyclerView.Adapter<RecentTranslationsListAdapter.RecentTranslationsViewHolder>() {
 
