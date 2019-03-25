@@ -32,6 +32,7 @@ class RecentTranslationsFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_recent_translations, container, false)
     }
 
+    //Set up UI
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val boldFont = ResourcesCompat.getFont(activity!!.applicationContext,
             R.font.pt_sans_bold

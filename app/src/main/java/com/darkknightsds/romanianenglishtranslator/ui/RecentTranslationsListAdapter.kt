@@ -10,7 +10,7 @@ import com.darkknightsds.romanianenglishtranslator.R
 import com.darkknightsds.romanianenglishtranslator.model.Translation
 import java.util.*
 
-//Adapter to bind data with recent translations RecyclerView
+//Standard adapter to bind data with recent translations RecyclerView
 class RecentTranslationsListAdapter(private val data: ArrayList<Translation>) :
     androidx.recyclerview.widget.RecyclerView.Adapter<RecentTranslationsListAdapter.RecentTranslationsViewHolder>() {
 

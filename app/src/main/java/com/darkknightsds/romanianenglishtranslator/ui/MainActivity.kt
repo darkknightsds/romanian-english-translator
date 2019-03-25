@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.recent_translations_fragment, recentTranslationsFragment).addToBackStack(null).commit()
     }
 
+    //Set up custom toolbar
     private fun Toolbar.changeToolbarFont(){
         for (i in 0 until childCount) {
             val view = getChildAt(i)
