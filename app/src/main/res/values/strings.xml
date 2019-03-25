@@ -8,9 +8,6 @@
     <string name="romanian_label_ro">Română</string>
     <string name="english_translate">Translate</string>
     <string name="romanian_translate">Traduce</string>
-    <string name="search_options">trnsl</string>
-    <string name="search_details">20190128T004622Z.bbd894fc7d7c8f92.28d722aa8c75cf403078d4a8b6f759df4ab9407d</string>
-    <string name="more_details">.1.1.</string>
     <string name="yandex_details">Translation Powered by Yandex.Translate</string>
     <string name="error_ro">Oops! Introdu ceva de tradus</string>
     <string name="error_en">Oops! Enter something to translate</string>

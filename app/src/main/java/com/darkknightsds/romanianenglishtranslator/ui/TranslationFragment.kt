@@ -75,9 +75,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         imageButton_clearEn.setOnClickListener(this)
         imageButton_clearRo.setOnClickListener(this)
 
-        options = resources.getString(R.string.search_options) + resources.getString(
-            R.string.more_details
-        ) + resources.getString(R.string.search_details)
+        options = "Enter your API key here"
 
         editText_translateEn.typeface = regFont
         editText_translateEn.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
