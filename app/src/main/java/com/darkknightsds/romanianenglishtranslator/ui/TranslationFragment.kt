@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -49,14 +50,12 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_translation, container, false)
     }
 
+    //Set up UI
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         languageConfig = resources.getString(R.string.en_ro)
 
         val boldFont = ResourcesCompat.getFont(activity!!.applicationContext,
             R.font.pt_sans_bold
-        )
-        val regFont = ResourcesCompat.getFont(activity!!.applicationContext,
-            R.font.pt_sans_reg
         )
 
         textView_enLabel.text = resources.getString(R.string.english_label_en)
@@ -77,19 +76,8 @@ class TranslationFragment : Fragment(), View.OnClickListener {
 
         options = "Enter your API key here"
 
-        editText_translateEn.typeface = regFont
-        editText_translateEn.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-        editText_translateEn.setSingleLine(true)
-        editText_translateEn.setLines(6)
-        editText_translateEn.setHorizontallyScrolling(false)
-        editText_translateEn.imeOptions = EditorInfo.IME_ACTION_DONE
-
-        editText_translateRo.typeface = regFont
-        editText_translateRo.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-        editText_translateRo.setSingleLine(true)
-        editText_translateRo.setLines(6)
-        editText_translateRo.setHorizontallyScrolling(false)
-        editText_translateRo.imeOptions = EditorInfo.IME_ACTION_DONE
+        setUpEditText(editText_translateEn)
+        setUpEditText(editText_translateRo)
 
         getView()!!.findViewById<EditText>(R.id.editText_translateEn).setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
@@ -97,7 +85,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                     languageConfig = resources.getString(R.string.en_ro)
                     translateEditText = editText_translateEn
                     resultsEditText = editText_translateRo
-                    translate()
+                    getTranslation()
                     true
                 }
                 else -> false
@@ -109,7 +97,7 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                     languageConfig = resources.getString(R.string.ro_en)
                     translateEditText = editText_translateRo
                     resultsEditText = editText_translateEn
-                    translate()
+                    getTranslation()
                     true
                 }
                 else -> false
@@ -134,45 +122,23 @@ class TranslationFragment : Fragment(), View.OnClickListener {
                 languageConfig = resources.getString(R.string.en_ro)
                 translateEditText = editText_translateEn
                 resultsEditText = editText_translateRo
-                translate()
+                getTranslation()
             }
             button_roToEn -> {
                 languageConfig = resources.getString(R.string.ro_en)
                 translateEditText = editText_translateRo
                 resultsEditText = editText_translateEn
-                translate()
+                getTranslation()
             }
             button_speechEn -> {
-                if (ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                        requireActivity(),
-                        arrayOf(
-                            Manifest.permission.RECORD_AUDIO
-                        ), REQUEST_RECORD_PERMISSION
-                    )
-                }
+                checkForMicPermissions()
                 languageConfig = resources.getString(R.string.en_ro)
-                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-                speechRecognizer.startListening(intent)
+                beginSpeechIntent("en-US")
             }
             button_speechRo -> {
-                if (ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                        requireActivity(),
-                        arrayOf(
-                            Manifest.permission.RECORD_AUDIO
-                        ), REQUEST_RECORD_PERMISSION
-                    )
-                }
+                checkForMicPermissions()
                 languageConfig = resources.getString(R.string.ro_en)
-                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro")
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-                speechRecognizer.startListening(intent)
+                beginSpeechIntent("ro")
             }
             imageButton_clearEn -> {
                 editText_translateEn.text.clear()
@@ -183,7 +149,8 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun translate() {
+    //Work with presenter to get translation for user input
+    private fun getTranslation() {
         if (!translationPresenter.isNetworkAvailable()) {
             Toast.makeText(activity, resources.getString(R.string.error_no_net), Toast.LENGTH_SHORT).show()
         } else {
@@ -211,23 +178,40 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun translationCompleted(translatedText: String) {
-        activity!!.runOnUiThread {
-            progressBar_translate.visibility = View.GONE
-            resultsEditText.setText(translatedText)
-            button_enToRo.isEnabled = true
-            button_roToEn.isEnabled = true
-            button_speechEn.isEnabled = true
-            button_speechRo.isEnabled = true
+    //Set EditText font and style
+    private fun setUpEditText(editText: EditText) {
+        val regFont = ResourcesCompat.getFont(activity!!.applicationContext,
+            R.font.pt_sans_reg
+        )
+        editText.typeface = regFont
+        editText.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        editText.setSingleLine(true)
+        editText.setLines(6)
+        editText.setHorizontallyScrolling(false)
+        editText.imeOptions = EditorInfo.IME_ACTION_DONE
+    }
 
-            val translation = Translation(
-                editText_translateEn.text.toString(),
-                editText_translateRo.text.toString()
+    private fun checkForMicPermissions() {
+        if (ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.RECORD_AUDIO
+                ), REQUEST_RECORD_PERMISSION
             )
-            translationPresenter.processRecentTranslations(translation, callback = this::recentTranslationSaved)
         }
     }
 
+    //Begin listening for user speech input
+    private fun beginSpeechIntent(language: String) {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, javaClass.getPackage()!!.name)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+        speechRecognizer.startListening(intent)
+    }
+
+    //Display results if beginSpeechIntent
     private fun displaySpeechText(results: String) {
         activity!!.runOnUiThread {
             if (languageConfig == resources.getString(R.string.en_ro)) {
@@ -246,10 +230,30 @@ class TranslationFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //Callback to display results
+    private fun translationCompleted(translatedText: String) {
+        activity!!.runOnUiThread {
+            progressBar_translate.visibility = View.GONE
+            resultsEditText.setText(translatedText)
+            button_enToRo.isEnabled = true
+            button_roToEn.isEnabled = true
+            button_speechEn.isEnabled = true
+            button_speechRo.isEnabled = true
+
+            val translation = Translation(
+                editText_translateEn.text.toString(),
+                editText_translateRo.text.toString()
+            )
+            translationPresenter.processRecentTranslations(translation, callback = this::recentTranslationSaved)
+        }
+    }
+
+    //Communicate with ViewModel to inform RecentTranslationsFragment of new translations
     private fun recentTranslationSaved(recentTranslations: String) {
         viewModel.newTranslationAdded(recentTranslations)
     }
 
+    //Destroy speech recognizer before lifecycle is complete
     override fun onDestroyView() {
         super.onDestroyView()
         speechRecognizer.destroy()
