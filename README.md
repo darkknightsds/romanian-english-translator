@@ -21,6 +21,7 @@ To install the project for development:
 
 * `git clone https://github.com/darkknightsds/romanian-english-translator`
 * `cd romanian-english-translator`
+* In TranslationFragment, replace `options` variable value with your Yandex API key
 
 ### Running the App
 * Launch app
