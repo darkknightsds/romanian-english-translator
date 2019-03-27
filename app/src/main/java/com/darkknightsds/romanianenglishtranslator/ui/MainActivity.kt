@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         textView_yandex.text = resources.getString(R.string.yandex_details)
         textView_yandex.typeface = regFont
 
-        supportFragmentManager.beginTransaction().replace(R.id.translation_fragment, translationFragment).addToBackStack(null).commit()
-        supportFragmentManager.beginTransaction().replace(R.id.recent_translations_fragment, recentTranslationsFragment).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.translation_fragment, translationFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.recent_translations_fragment, recentTranslationsFragment).commit()
     }
 
     //Set up custom toolbar
